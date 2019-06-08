@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 connection_url = "mysql+mysqlconnector://root:Zwb@123456@198.12.97.201:3306/test"
 
-engine = create_engine(connection_url)
+engine = create_engine(connection_url, pool_size=5)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -37,5 +37,5 @@ if __name__ == "__main__":
         init()
        # session = Session()
         with session_scope() as session:
-            user = User(id='2', name='Bob')
+            user = User(id='11', name='Bob')
             session.add(user)

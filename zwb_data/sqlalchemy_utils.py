@@ -5,9 +5,9 @@ from sqlalchemy.ext.declarative import declarative_base
 
 connection_url = "mysql+mysqlconnector://root:Zwb@123456@198.12.97.201:3306/test"
 
-Base = declarative_base()
 engine = create_engine(connection_url)
 Session = sessionmaker(bind=engine)
+Base = declarative_base()
 
 
 @contextmanager

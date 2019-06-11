@@ -3,39 +3,43 @@ from sqlalchemy import Column, String, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-connection_url = "mysql+mysqlconnector://root:Zwb@123456@198.12.97.201:3306/test"
 
-engine = create_engine(connection_url, pool_size=5)
-Session = sessionmaker(bind=engine)
-Base = declarative_base()
+class DbClient:
 
+    def __init__(self, *args, **kwargs):
+        self.engine = create_engine(*args, **kwargs)
+        self.Session = sessionmaker(bind=self.engine)
+        self.Base = declarative_base()
 
-@contextmanager
-def session_scope():
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+    def get_session(self):
+        return self.Session()
 
+    @contextmanager
+    def get_session_scope(self):
+        session = self.Session()
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
-def init():
-    Base.metadata.create_all(engine)
-
-
-class User(Base):
-    __tablename__ = 'user'
-    id = Column(String(20), primary_key=True)
-    name = Column(String(20))
+    def init(self):
+        self.Base.metadata.create_all(engine)
 
 
 if __name__ == "__main__":
-        init()
-       # session = Session()
-        with session_scope() as session:
-            user = User(id='11', name='Bob')
-            session.add(user)
+    db = DbClient("mysql+mysqlconnector://root:root@192.168.19.11/demo")
+
+    class User(db.Base):
+        __tablename__ = 'user'
+        id = Column(String(20), primary_key=True)
+        name = Column(String(20))
+
+    with db.get_session_scope() as session:
+        user = User()
+        user.id = "22"
+        user.name = "bb"
+        session.add(user)

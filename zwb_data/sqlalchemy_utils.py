@@ -2,7 +2,8 @@ from contextlib import contextmanager
 from sqlalchemy import Column, String, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
+import collections
+import sqlalchemy.engine.result
 
 class DbClient:
 
@@ -30,6 +31,12 @@ class DbClient:
         self.Base.metadata.create_all(engine)
 
 
+def result_to_namedtuple(result: sqlalchemy.engine.result.ResultProxy):
+    Record = collections.namedtuple('Record', result.keys())
+    records = [Record(*r) for r in result.fetchall()]
+    return records
+
+
 if __name__ == "__main__":
     db = DbClient("mysql+mysqlconnector://root:root@192.168.19.11/demo")
 
@@ -39,7 +46,6 @@ if __name__ == "__main__":
         name = Column(String(20))
 
     with db.open_session_scope() as session:
-        user = User()
-        user.id = "44"
-        user.name = "dd"
-        session.add(user)
+        records= result_to_namedtuple( session.execute("select * from user"))
+        for r in records:
+            print(r.id)

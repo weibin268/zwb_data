@@ -12,5 +12,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     platforms="any",
-    install_requires=["SQLAlchemy==1.3.4"]
+    install_requires=["SQLAlchemy==1.3.4","mysql-connector==2.2.9"]
 )

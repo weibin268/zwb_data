@@ -11,12 +11,12 @@ class DbClient:
         self.Session = sessionmaker(bind=self.engine)
         self.Base = declarative_base()
 
-    def get_session(self):
+    def open_session(self):
         return self.Session()
 
     @contextmanager
-    def get_session_scope(self):
-        session = self.get_session()
+    def open_session_scope(self):
+        session = self.open_session()
         try:
             yield session
             session.commit()
@@ -38,8 +38,8 @@ if __name__ == "__main__":
         id = Column(String(20), primary_key=True)
         name = Column(String(20))
 
-    with db.get_session_scope() as session:
+    with db.open_session_scope() as session:
         user = User()
-        user.id = "33"
-        user.name = "cc"
+        user.id = "44"
+        user.name = "dd"
         session.add(user)

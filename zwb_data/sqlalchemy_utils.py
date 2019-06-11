@@ -16,7 +16,7 @@ class DbClient:
 
     @contextmanager
     def get_session_scope(self):
-        session = self.Session()
+        session = self.get_session()
         try:
             yield session
             session.commit()
@@ -40,6 +40,6 @@ if __name__ == "__main__":
 
     with db.get_session_scope() as session:
         user = User()
-        user.id = "22"
-        user.name = "bb"
+        user.id = "33"
+        user.name = "cc"
         session.add(user)
